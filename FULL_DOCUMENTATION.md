@@ -22,10 +22,10 @@ pip install -e .
 
 ## ✅ Prerequisites Checklist (Complete These Before Moving Forward)
 
-- [ ] **Docker Desktop** is installed and running in the background
-- [ ] **Code versioning** is properly set up using GitHub (repository pushed and updated)
-- [ ] **Dockerfile** is created and configured for the project
-- [ ] **Dockerfile** is also created and configured for **Jenkins**
+- [-] **Docker Desktop** is installed and running in the background
+- [-] **Code versioning** is properly set up using GitHub (repository pushed and updated)
+- [-] **Dockerfile** is created and configured for the project
+- [-] **Dockerfile** is also created and configured for **Jenkins**
 
 ## ==> 1. 🚀 Jenkins Setup for Deployment
 
