@@ -1,29 +1,49 @@
-## Parent image
-FROM python:3.10-slim
+############################################
+# STAGE 1 — BUILDER
+############################################
+FROM python:3.10-slim AS builder
 
-## Essential environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-## Work directory inside the docker container
-WORKDIR /app
+WORKDIR /build
 
-## Installing system dependencies
+# Install system packages required to build Python deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-## Copying all contents from local to container
+# Copy project files
 COPY . .
 
-## Install Python dependencies
-RUN pip install --no-cache-dir -e .
+# Install dependencies into a virtual environment
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir -e .
 
-## Expose only flask port
+
+############################################
+# STAGE 2 — FINAL RUNTIME IMAGE
+############################################
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Activate venv for all future commands
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy only source code (not build tools)
+COPY . .
+
+# Expose Flask port
 EXPOSE 5000
 
-## Run the Flask app
+# Start your app
 CMD ["python", "app/application.py"]
-
-
